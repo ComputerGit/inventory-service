@@ -1,0 +1,32 @@
+name: Inventory Service Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test-and-prove:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Download your code
+    - uses: actions/checkout@v4
+
+    # 2. Install Java 17 (Just like you did on your laptop)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    # 3. Run the Tests (The Proof)
+    - name: Run Maven Tests
+      run: mvn -B test --file pom.xml
+
+    # 4. Generate the HTML Report (Optional Professional Touch)
+    - name: Generate Surefire Report
+      if: always() # Run this even if tests fail
+      run: mvn surefire-report:report

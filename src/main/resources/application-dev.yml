@@ -1,0 +1,42 @@
+spring:
+    application:
+        name: inventory-service
+
+    # --- DATABASE CONNECTION ---
+    datasource:
+        url: jdbc:postgresql://localhost:5432/inventory_db
+        username: postgres
+        password: password
+        driver-class-name: org.postgresql.Driver
+
+    # --- JPA / HIBERNATE ---
+    jpa:
+        open-in-view: false # Pro Tip: Disable this to prevent hidden performance issues
+        hibernate:
+            ddl-auto: update # For Dev only. In Prod, use 'validate' or 'none' (Flyway handles it)
+        properties:
+            hibernate:
+                format_sql: true # Pretty print SQL in logs
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+
+    # --- KAFKA (For Domain Events) ---
+    kafka:
+        bootstrap-servers: localhost:9092
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# --- gRPC SERVER ---
+grpc:
+    server:
+        port: 9090 # The port where Order Service will call us
+        enable-keep-alive: true
+        keep-alive-time: 30s
+
+# --- LOGGING ---
+logging:
+    level:
+        com.at.t.ecommerce: DEBUG # See our own logs clearly
+        org.hibernate.SQL: DEBUG # See the raw SQL queries
+    flyway:
+        enabled: true
