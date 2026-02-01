@@ -1,0 +1,1 @@
+[![Inventory Service Tests](https://github.com/ComputerGit/inventory-service/actions/workflows/maven-verify.yml/badge.svg)](https://github.com/ComputerGit/inventory-service/actions/workflows/maven-verify.yml)
