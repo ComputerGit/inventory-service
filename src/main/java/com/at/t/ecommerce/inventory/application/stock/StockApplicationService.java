@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.at.t.ecommerce.inventory.domain.stock.entities.Stock;
 import com.at.t.ecommerce.inventory.domain.stock.exceptions.StockNotFoundException;
 import com.at.t.ecommerce.inventory.domain.stock.repositories.StockRepository;
+import com.at.t.ecommerce.inventory.domain.stock.events.StockEventPublisher; // <-- Add this import
+import com.at.t.ecommerce.inventory.domain.stock.events.StockReservedEvent;  // <-- Add this import
 import com.at.t.ecommerce.inventory.domain.stock.vo.*;
 
 import lombok.RequiredArgsConstructor;
@@ -13,30 +15,30 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j // Logs are crucial for debugging production issues
+@Slf4j 
 public class StockApplicationService {
 
     private final StockRepository repository;
+    private final StockEventPublisher eventPublisher; // <-- 1. Inject the Publisher here!
 
-    /**
-     * The Main Orchestrator for Reservations.
-     * 1. Loads the Aggregate (Stock)
-     * 2. Executes Business Logic (Reserve)
-     * 3. Persists State
-     */
     @Transactional
     public void reserveStock(ProductId productId, WarehouseId warehouseId, Quantity amount) {
         log.info("Attempting to reserve {} items for Product: {}", amount.value(), productId.value());
 
-        // 1. Fetch the Aggregate (Use the Lock if high concurrency is expected)
         Stock stock = repository.findByProductAndWarehouse(productId, warehouseId)
                 .orElseThrow(() -> new StockNotFoundException(productId, warehouseId));
 
-        // 2. Execute Domain Logic (The Domain guarantees the rules)
         stock.reserveStock(amount);
-
-        // 3. Save (This flushes the changes to DB and dispatches Events)
         repository.save(stock);
+        
+        // --- 2. THE MISSING KAFKA TRIGGER ---
+        StockReservedEvent event = StockReservedEvent.create(
+                productId.value(),
+                warehouseId.value(),
+                amount.value()
+        );
+        eventPublisher.publishStockReservedEvent(event);
+        // ------------------------------------
         
         log.info("Reservation successful. New Available Qty: {}", stock.getAvailableToPromise().value());
     }

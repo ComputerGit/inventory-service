@@ -1,18 +1,22 @@
 package com.at.t.ecommerce.inventory.domain.stock.events;
 
 import java.time.Instant;
-
-import com.at.t.ecommerce.inventory.domain.shared.DomainEvent;
-import com.at.t.ecommerce.inventory.domain.stock.vo.*;
+import java.util.UUID;
 
 public record StockReservedEvent(
-    StockId stockId,
-    ProductId productId,
-    Quantity amountReserved,
-    Instant occurredOn
-) implements DomainEvent {
-
-    public static StockReservedEvent from(StockId stockId, ProductId productId, Quantity amount) {
-        return new StockReservedEvent(stockId, productId, amount, Instant.now());
+        String eventId,
+        String productId,
+        String warehouseId,
+        long quantityReserved,
+        Instant timestamp
+) {
+    public static StockReservedEvent create(String productId, String warehouseId, long quantity) {
+        return new StockReservedEvent(
+                UUID.randomUUID().toString(),
+                productId,
+                warehouseId,
+                quantity,
+                Instant.now()
+        );
     }
 }

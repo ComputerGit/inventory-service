@@ -6,7 +6,7 @@ spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/inventory_db
         username: postgres
-        password: password
+        password: ${DB_PASSWORD:Rahul@123}
         driver-class-name: org.postgresql.Driver
 
     # --- JPA / HIBERNATE ---
@@ -40,3 +40,8 @@ logging:
         org.hibernate.SQL: DEBUG # See the raw SQL queries
     flyway:
         enabled: true
+
+management:
+    endpoint:
+        health:
+            show-details: always
