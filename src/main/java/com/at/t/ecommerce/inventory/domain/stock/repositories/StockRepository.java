@@ -21,7 +21,7 @@ public interface StockRepository {
     Optional<Stock> findById(StockId id);
 
     /**
-     * Finds stock by its Business Keys. 
+     * Finds stock by its Business Keys.
      * The Service layer needs this to find "The iPhone 15 at Texas Warehouse".
      */
     Optional<Stock> findByProductAndWarehouse(ProductId productId, WarehouseId warehouseId);

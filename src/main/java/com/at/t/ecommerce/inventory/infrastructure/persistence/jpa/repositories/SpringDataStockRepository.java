@@ -8,8 +8,8 @@ import jakarta.persistence.LockModeType;
 
 import com.at.t.ecommerce.inventory.infrastructure.persistence.jpa.entities.StockJpaEntity;
 
-// NOTE: This is internal to Infrastructure. The Domain DOES NOT see this.
-public interface SpringDataStockRepository extends JpaRepository<StockJpaEntity, String> {
+// NOTE: This is internal to Infrastructure. The Domain DOES NOT see this. StockJpaEntity is named as stock_inventory in the DB
+public interface SpringDataStockRepository extends JpaRepository<StockJpaEntity, String>  {
 
     // Supports findByProductAndWarehouse
     Optional<StockJpaEntity> findByProductIdAndWarehouseId(String productId, String warehouseId);

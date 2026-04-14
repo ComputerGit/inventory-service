@@ -69,7 +69,7 @@ public class StockRepositoryAdapter implements StockRepository {
     @Override
     public Optional<Stock> findByProductAndWarehouse(ProductId productId, WarehouseId warehouseId) {
         Optional<StockJpaEntity> entityOpt = jpaRepository.findByProductIdAndWarehouseId(
-                productId.value(), 
+                productId.value(),
                 warehouseId.value()
         );
         // Use the helper method!

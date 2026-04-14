@@ -40,7 +40,7 @@ public class StockRepositoryImpl implements StockRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Stock> findByProductAndWarehouse(ProductId productId, WarehouseId warehouseId) {
+    public Optional<Stock> findByProductAndWarehouse (ProductId productId, WarehouseId warehouseId) {
         return jpaRepository.findByProductIdAndWarehouseId(productId.value(), warehouseId.value())
                 .map(mapper::toDomain);
     }
